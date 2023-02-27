@@ -13,6 +13,22 @@ import {
   VoidCallback,
 } from ".";
 import { Nullable } from "./types";
+import { createInterface } from "readline";
+
+const rl = createInterface({
+  input: process.stdin,
+  output: process.stdout,
+  terminal: false,
+});
+
+rl.on("line", (line) => {
+  try {
+    const data = JSON.parse(line);
+    console.log(data);
+  } catch(e) {
+    console.log("Can't parse stdin: " + line);
+  }
+});
 
 const err: Nullable<Error> = null; // in case there were any problems
 
@@ -20,6 +36,7 @@ const err: Nullable<Error> = null; // in case there were any problems
 const FAKE_OUTLET = {
   powerOn: false,
   setPowerOn: (on: CharacteristicValue) => {
+    process.stdout.write(`${JSON.stringify({ id: 0, power: on })}\n`);
     console.log("Turning the outlet %s!...", on ? "on" : "off");
     if (on) {
       FAKE_OUTLET.powerOn = true;
